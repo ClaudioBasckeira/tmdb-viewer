@@ -1,7 +1,6 @@
 package br.com.claudiobasckeira.tmdbviewer.activities;
 
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -13,27 +12,23 @@ import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
-import org.androidannotations.annotations.sharedpreferences.Pref;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import br.com.claudiobasckeira.tmdbviewer.R;
 import br.com.claudiobasckeira.tmdbviewer.genre.GenreManager;
-import br.com.claudiobasckeira.tmdbviewer.preferences.TmdbViewerPreferences_;
+import br.com.claudiobasckeira.tmdbviewer.helpers.ImageDownload;
+import br.com.claudiobasckeira.tmdbviewer.helpers.TmdbViewerDateHelper;
 import br.com.claudiobasckeira.tmdbviewer.values.Movie;
-
-import static java.security.AccessController.getContext;
 
 @EActivity(R.layout.activity_movie_details)
 public class MovieDetailsActivity extends AppCompatActivity {
     @Extra
     Movie movie;
 
-    @Pref
-    TmdbViewerPreferences_ prefs;
+    @Bean
+    ImageDownload imageDownload;
 
     @Bean
     GenreManager genreManager;
@@ -45,9 +40,10 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
     @AfterViews
     void init() {
-        //TODO: improve this and check if exists, also extract path generation to a helper class and setup a cache!
         Glide.with(this)
-                .load(prefs.imagesBaseUrl().get()+"/original/"+movie.getPosterPath())
+                .load(imageDownload.getImageUrl(ImageDownload.SIZE_ORIGINAL,movie.getPosterPath()))
+                .placeholder(R.drawable.movie_poster_placeholder)
+                .error(R.drawable.poster_not_available)
                 .into(ivPoster);
 
         tvMovieName.setText(movie.getTitle());
@@ -58,8 +54,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
         }
         tvMovieGenre.setText(TextUtils.join(", ",genreNames));
 
-        //TODO: Improve this
-        tvMovieReleaseDate.setText(DateTime.parse(movie.getReleaseDate()).toString(DateTimeFormat.forPattern("MM/dd/yyyy")));
+        tvMovieReleaseDate.setText(TmdbViewerDateHelper.format(movie.getReleaseDate()));
 
         tvMovieOverview.setText(movie.getOverview());
     }

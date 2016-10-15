@@ -1,20 +1,19 @@
 package br.com.claudiobasckeira.tmdbviewer.viewgroups;
 
 import android.content.Context;
+import android.support.v7.widget.CardView;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;
-import org.androidannotations.annotations.sharedpreferences.Pref;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,14 +21,14 @@ import java.util.List;
 import br.com.claudiobasckeira.tmdbviewer.R;
 import br.com.claudiobasckeira.tmdbviewer.activities.MovieDetailsActivity_;
 import br.com.claudiobasckeira.tmdbviewer.genre.GenreManager;
-import br.com.claudiobasckeira.tmdbviewer.preferences.TmdbViewerPreferences;
-import br.com.claudiobasckeira.tmdbviewer.preferences.TmdbViewerPreferences_;
+import br.com.claudiobasckeira.tmdbviewer.helpers.TmdbViewerDateHelper;
+import br.com.claudiobasckeira.tmdbviewer.helpers.ImageDownload;
 import br.com.claudiobasckeira.tmdbviewer.values.Movie;
 
 @EViewGroup(R.layout.viewgroup_movie_list_item)
-public class MovieListItem extends LinearLayout {
-    @Pref
-    TmdbViewerPreferences_ prefs;
+public class MovieListItem extends CardView implements View.OnClickListener {
+    @Bean
+    ImageDownload imageDownload;
 
     @Bean
     GenreManager genreManager;
@@ -39,14 +38,30 @@ public class MovieListItem extends LinearLayout {
     @ViewById
     TextView tvMovieName, tvMovieGenre, tvMovieReleaseDate;
 
+    private Movie movie;
+
     public MovieListItem(Context context) {
         super(context);
+        setUseCompatPadding(true);
+
+        LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        setLayoutParams(params);
+    }
+
+    @AfterViews
+    void init() {
+
     }
 
     public void bind(Movie movie) {
-        //TODO: improve this and check if exists, also extract path generation to a helper class and setup a cache!
+        setOnClickListener(this);
+
+        this.movie = movie;
+
         Glide.with(getContext())
-                .load(prefs.imagesBaseUrl().get()+"/original/"+movie.getPosterPath())
+                .load(imageDownload.getImageUrl(ImageDownload.SIZE_LIST,movie.getPosterPath()))
+                .placeholder(R.drawable.movie_poster_placeholder)
+                .error(R.drawable.poster_not_available)
                 .into(ivPoster);
         tvMovieName.setText(movie.getTitle());
 
@@ -56,7 +71,11 @@ public class MovieListItem extends LinearLayout {
         }
         tvMovieGenre.setText(TextUtils.join(", ",genreNames));
 
-        //TODO: Improve this
-        tvMovieReleaseDate.setText(DateTime.parse(movie.getReleaseDate()).toString(DateTimeFormat.forPattern("MM/dd/yyyy")));
+        tvMovieReleaseDate.setText(TmdbViewerDateHelper.format(movie.getReleaseDate()));
+    }
+
+    @Override
+    public void onClick(View view) {
+        MovieDetailsActivity_.intent(getContext()).movie(movie).start();
     }
 }

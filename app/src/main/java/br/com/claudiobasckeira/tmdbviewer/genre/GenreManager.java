@@ -58,6 +58,7 @@ public class GenreManager {
     }
 
     public String getGenreName(int genreId) {
+        if(!genreMap.containsKey(genreId)) return "";
         return genreMap.get(genreId).getName();
     }
 

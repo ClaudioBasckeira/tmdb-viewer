@@ -29,6 +29,7 @@ import br.com.claudiobasckeira.tmdbviewer.database.entities.MovieGenreRecord;
 import br.com.claudiobasckeira.tmdbviewer.database.helper.TmdbViewerDatabaseHelper;
 import br.com.claudiobasckeira.tmdbviewer.events.GetConfigurationAndGenresEvent;
 import br.com.claudiobasckeira.tmdbviewer.events.GetUpcomingMoviesEvent;
+import br.com.claudiobasckeira.tmdbviewer.events.SearchMoviesEvent;
 import br.com.claudiobasckeira.tmdbviewer.genre.GenreManager;
 import br.com.claudiobasckeira.tmdbviewer.preferences.TmdbViewerPreferences;
 import br.com.claudiobasckeira.tmdbviewer.preferences.TmdbViewerPreferences_;
@@ -95,6 +96,7 @@ public class TmdbViewerApi {
             Response<MoviesApiResponse> apiResponse = services.getUpcomingMovies().execute();
 
             if(apiResponse.isSuccessful()) {
+                //TODO: Order the list!
                 List<Movie> movieList = MovieListMapper.toMovieList(apiResponse.body());
                 response = new GetUpcomingMoviesEvent.Response(movieList);
             } else {
@@ -106,6 +108,29 @@ public class TmdbViewerApi {
         } catch (IOException e) {
             e.printStackTrace();
             response = new GetUpcomingMoviesEvent.Response(e);
+            EventBus.getDefault().post(response);
+        }
+    }
+
+    public void onEventBackgroundThread(SearchMoviesEvent.Request request) {
+        SearchMoviesEvent.Response response;
+
+        try {
+            Response<MoviesApiResponse> apiResponse = services.searchMovies(request.getQuery()).execute();
+
+            if(apiResponse.isSuccessful()) {
+                //TODO: Order the list!
+                List<Movie> movieList = MovieListMapper.toMovieList(apiResponse.body());
+                response = new SearchMoviesEvent.Response(movieList);
+            } else {
+                Throwable throwable = new Throwable(apiResponse.message());
+                response = new SearchMoviesEvent.Response(throwable);
+            }
+            EventBus.getDefault().post(response);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            response = new SearchMoviesEvent.Response(e);
             EventBus.getDefault().post(response);
         }
     }

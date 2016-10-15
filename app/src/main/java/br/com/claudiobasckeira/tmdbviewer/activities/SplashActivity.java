@@ -14,15 +14,15 @@ import de.greenrobot.event.EventBus;
 public class SplashActivity extends EventAwareActivity {
     @AfterViews
     protected void init() {
+        //TODO: Define an interval before configuration needs to be updated. Every few days, maybe
         EventBus.getDefault().post(new GetConfigurationAndGenresEvent.Request());
     }
 
     public void onEventMainThread(GetConfigurationAndGenresEvent.Response response) {
         if(response.isError()) {
-            //TODO: Extract error message
             Toast.makeText(
                     this,
-                    "Error communicating with TMDb: "+response.getThrowable().getMessage(),
+                    R.string.network_error,
                     Toast.LENGTH_LONG).show();
             finish();
             return;

@@ -1,6 +1,7 @@
 package br.com.claudiobasckeira.tmdbviewer.adapters;
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -17,11 +18,19 @@ import br.com.claudiobasckeira.tmdbviewer.viewgroups.MovieListItem;
 import br.com.claudiobasckeira.tmdbviewer.viewgroups.MovieListItem_;
 
 @EBean
-public class MovieListAdapter extends BaseAdapter{
+public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.ViewHolder>{
     @RootContext
     Context context;
 
     private List<Movie> movieList;
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        public MovieListItem movieListItem;
+        public ViewHolder(MovieListItem v) {
+            super(v);
+            movieListItem = v;
+        }
+    }
 
     @AfterInject
     void init() {
@@ -33,14 +42,19 @@ public class MovieListAdapter extends BaseAdapter{
         notifyDataSetChanged();
     }
 
-    @Override
-    public int getCount() {
-        return movieList.size();
+    public Object getItem(int i) {
+        return movieList.get(i);
     }
 
     @Override
-    public Object getItem(int i) {
-        return movieList.get(i);
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        MovieListItem view = MovieListItem_.build(parent.getContext());
+        return new ViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        holder.movieListItem.bind(movieList.get(position));
     }
 
     @Override
@@ -49,13 +63,7 @@ public class MovieListAdapter extends BaseAdapter{
     }
 
     @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
-        if(view == null) {
-            view = MovieListItem_.build(context);
-        }
-
-        ((MovieListItem)view).bind(movieList.get(i));
-
-        return view;
+    public int getItemCount() {
+        return movieList.size();
     }
 }
