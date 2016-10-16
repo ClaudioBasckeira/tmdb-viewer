@@ -1,5 +1,7 @@
 package br.com.claudiobasckeira.tmdbviewer.api.entities;
 
+import org.joda.time.LocalDate;
+
 import java.util.List;
 
 public class MovieApiResponse {
@@ -7,9 +9,9 @@ public class MovieApiResponse {
     String posterPath;
     List<Integer> genreIds;
     String overview;
-    String releaseDate;
+    LocalDate releaseDate;
 
-    public MovieApiResponse(String title, String posterPath, List<Integer> genreIds, String overview, String releaseDate) {
+    public MovieApiResponse(String title, String posterPath, List<Integer> genreIds, String overview, LocalDate releaseDate) {
         this.title = title;
         this.posterPath = posterPath;
         this.genreIds = genreIds;
@@ -49,11 +51,11 @@ public class MovieApiResponse {
         this.overview = overview;
     }
 
-    public String getReleaseDate() {
+    public LocalDate getReleaseDate() {
         return releaseDate;
     }
 
-    public void setReleaseDate(String releaseDate) {
+    public void setReleaseDate(LocalDate releaseDate) {
         this.releaseDate = releaseDate;
     }
 }

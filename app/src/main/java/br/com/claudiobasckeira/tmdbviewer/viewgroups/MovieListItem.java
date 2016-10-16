@@ -70,7 +70,7 @@ public class MovieListItem extends CardView implements View.OnClickListener {
         }
         tvMovieGenres.setText(TextUtils.join(", ",genreNames));
 
-        tvMovieReleaseDate.setText(TmdbViewerDateHelper.format(movie.getReleaseDate()));
+        tvMovieReleaseDate.setText(TmdbViewerDateHelper.format(movie.getReleaseDate(),getContext().getString(R.string.release_date_unavailable)));
     }
 
     @Override

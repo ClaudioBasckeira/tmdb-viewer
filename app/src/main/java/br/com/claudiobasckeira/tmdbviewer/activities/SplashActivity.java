@@ -14,7 +14,6 @@ import de.greenrobot.event.EventBus;
 public class SplashActivity extends EventAwareActivity {
     @AfterViews
     protected void init() {
-        //TODO: Define an interval before configuration needs to be updated. Every few days, maybe
         EventBus.getDefault().post(new GetConfigurationAndGenresEvent.Request());
     }
 

@@ -40,6 +40,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
     @AfterViews
     void init() {
+        setTitle(getString(R.string.details_about, movie.getTitle()));
         Glide.with(this)
                 .load(imageDownload.getImageUrl(ImageDownload.SIZE_ORIGINAL,movie.getPosterPath()))
                 .placeholder(R.drawable.movie_poster_placeholder)
@@ -54,7 +55,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
         }
         tvMovieGenres.setText(TextUtils.join(", ",genreNames));
 
-        tvMovieReleaseDate.setText(TmdbViewerDateHelper.format(movie.getReleaseDate()));
+        tvMovieReleaseDate.setText(TmdbViewerDateHelper.format(movie.getReleaseDate(), getString(R.string.release_date_unavailable)));
 
         tvMovieOverview.setText(movie.getOverview());
     }

@@ -7,21 +7,28 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.InjectMenu;
+import org.androidannotations.annotations.InstanceState;
 import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.OptionsMenu;
 import org.androidannotations.annotations.ViewById;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import br.com.claudiobasckeira.tmdbviewer.R;
 import br.com.claudiobasckeira.tmdbviewer.adapters.MovieListAdapter;
 import br.com.claudiobasckeira.tmdbviewer.events.GetUpcomingMoviesEvent;
 import br.com.claudiobasckeira.tmdbviewer.events.base.GetMoviesEvent;
 import br.com.claudiobasckeira.tmdbviewer.helpers.SwipeRefreshWorkaround;
+import br.com.claudiobasckeira.tmdbviewer.values.Movie;
 import de.greenrobot.event.EventBus;
 
 @EActivity(R.layout.activity_movie_list)
@@ -35,6 +42,14 @@ public abstract class MovieListActivity extends EventAwareActivity implements Sw
 
     @ViewById
     protected RecyclerView rvMovies;
+
+    @ViewById
+    protected TextView tvEmptyList;
+
+    @InstanceState
+    protected List<Movie> movieList;
+
+    protected LinearLayoutManager linearLayoutManager;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -50,35 +65,48 @@ public abstract class MovieListActivity extends EventAwareActivity implements Sw
 
     @AfterViews
     protected void initMovieList() {
-        //TODO: test and deal with empty lists
-        //TODO: handle rotation better
         srlMovies.setOnRefreshListener(this);
-        SwipeRefreshWorkaround.setRefreshing(srlMovies, true);
 
         rvMovies.setAdapter(movieListAdapter);
-        rvMovies.setLayoutManager(new LinearLayoutManager(this));
+        linearLayoutManager = new LinearLayoutManager(this);
+        rvMovies.setLayoutManager(linearLayoutManager);
 
-        EventBus.getDefault().post(instantiateGetMoviesEvent());
+        if(movieList == null) {
+            fetchNewData();
+        }
+        else {
+            updateAdapterData();
+        }
     }
 
     @Override
     public void onRefresh() {
+        fetchNewData();
+    }
+
+    public void fetchNewData() {
+        SwipeRefreshWorkaround.setRefreshing(srlMovies, true);
         EventBus.getDefault().post(instantiateGetMoviesEvent());
     }
 
     public void handleEventBusResponse(GetMoviesEvent.Response response) {
         SwipeRefreshWorkaround.setRefreshing(srlMovies, false);
         if (!response.isError()) {
-            movieListAdapter.updateData(response.getBody());
+            movieList = response.getBody();
+            updateAdapterData();
         } else {
             Toast.makeText(this, R.string.movie_list_error, Toast.LENGTH_LONG).show();
         }
     }
 
+    protected void updateAdapterData() {
+        movieListAdapter.updateData(movieList);
+        tvEmptyList.setVisibility(movieList.isEmpty() ? View.VISIBLE : View.GONE);
+    }
+
     @OptionsItem(R.id.menu_refresh)
     protected void refreshPressed() {
-        SwipeRefreshWorkaround.setRefreshing(srlMovies, true);
-        onRefresh();
+        fetchNewData();
     }
 
     protected abstract GetMoviesEvent.Request instantiateGetMoviesEvent();

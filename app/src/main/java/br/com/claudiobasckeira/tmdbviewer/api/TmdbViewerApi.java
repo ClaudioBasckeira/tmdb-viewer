@@ -2,6 +2,7 @@ package br.com.claudiobasckeira.tmdbviewer.api;
 
 import android.content.Context;
 
+import com.fatboyindustrial.gsonjodatime.Converters;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -14,8 +15,11 @@ import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.RootContext;
 import org.androidannotations.annotations.sharedpreferences.Pref;
 import org.androidannotations.ormlite.annotations.OrmLiteDao;
+import org.joda.time.Days;
+import org.joda.time.LocalDate;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -48,6 +52,8 @@ public class TmdbViewerApi {
     public static final String ENDPOINT = "api.themoviedb.org";
     public static final String API_VERSION = "3";
 
+    public static final int CONFIGURATION_UPDATE_INTERVAL = 2;
+
     @RootContext
     Context context;
 
@@ -76,9 +82,11 @@ public class TmdbViewerApi {
                 .addInterceptor(loggingInterceptor)
                 .build();
 
-        Gson gson = new GsonBuilder()
+        GsonBuilder gsonBuilder = new GsonBuilder()
                 .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-                .create();
+                .setDateFormat("yyyy-MM-dd");
+
+        Gson gson = Converters.registerLocalDate(gsonBuilder).create();
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(PROTOCOL+"://"+ENDPOINT+"/"+API_VERSION+"/")
@@ -93,11 +101,10 @@ public class TmdbViewerApi {
         GetUpcomingMoviesEvent.Response response;
 
         try {
-            Response<MoviesApiResponse> apiResponse = services.getUpcomingMovies().execute();
+            Response<MoviesApiResponse> apiResponse = services.getUpcomingMovies(1).execute();
 
             if(apiResponse.isSuccessful()) {
-                //TODO: Order the list!
-                List<Movie> movieList = MovieListMapper.toMovieList(apiResponse.body());
+                List<Movie> movieList = MovieListMapper.toDateOrderedMovieList(apiResponse.body());
                 response = new GetUpcomingMoviesEvent.Response(movieList);
             } else {
                 Throwable throwable = new Throwable(apiResponse.message());
@@ -119,7 +126,6 @@ public class TmdbViewerApi {
             Response<MoviesApiResponse> apiResponse = services.searchMovies(request.getQuery()).execute();
 
             if(apiResponse.isSuccessful()) {
-                //TODO: Order the list!
                 List<Movie> movieList = MovieListMapper.toMovieList(apiResponse.body());
                 response = new SearchMoviesEvent.Response(movieList);
             } else {
@@ -138,16 +144,22 @@ public class TmdbViewerApi {
     public void onEventBackgroundThread(GetConfigurationAndGenresEvent.Request request) {
         GetConfigurationAndGenresEvent.Response response;
 
-        try {
-            getConfiguration();
-            getMovieGenres();
-
+        if(prefs.lastUpdate().exists() && Days.daysBetween(new LocalDate(prefs.lastUpdate().get()), new LocalDate()).getDays() < CONFIGURATION_UPDATE_INTERVAL) {
             response = new GetConfigurationAndGenresEvent.Response();
             EventBus.getDefault().post(response);
-        } catch (IOException e) {
-            e.printStackTrace();
-            response = new GetConfigurationAndGenresEvent.Response(e);
-            EventBus.getDefault().post(response);
+        } else {
+            try {
+                getConfiguration();
+                getMovieGenres();
+                prefs.lastUpdate().put(new LocalDate().toString());
+
+                response = new GetConfigurationAndGenresEvent.Response();
+                EventBus.getDefault().post(response);
+            } catch (IOException e) {
+                e.printStackTrace();
+                response = new GetConfigurationAndGenresEvent.Response(e);
+                EventBus.getDefault().post(response);
+            }
         }
     }
 

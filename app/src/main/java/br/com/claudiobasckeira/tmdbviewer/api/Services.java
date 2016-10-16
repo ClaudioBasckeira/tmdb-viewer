@@ -16,7 +16,7 @@ public interface Services {
     Call<MovieGenresApiResponse> getMovieGenres();
 
     @GET("movie/upcoming")
-    Call<MoviesApiResponse> getUpcomingMovies();
+    Call<MoviesApiResponse> getUpcomingMovies(@Query("page") int page);
 
     @GET("search/movie")
     Call<MoviesApiResponse> searchMovies(@Query("query") String query);
