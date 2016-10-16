@@ -21,7 +21,7 @@ public class MovieSearchResultsActivity extends MovieListActivity {
 
     @AfterViews
     protected void setTitle() {
-        setTitle("Search results for: " + query);
+        setTitle(getString(R.string.search_results_for, query));
     }
 
     @Override

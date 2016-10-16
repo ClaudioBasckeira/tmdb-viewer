@@ -5,7 +5,17 @@
     style="@style/MainActivityContainer"
     tools:context="br.com.claudiobasckeira.tmdbviewer.activities.UpcomingMoviesActivity_">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rvMovies"
-        style="@style/MovieList"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rvMovies"
+            style="@style/MovieList"/>
+
+        <TextView
+            android:id="@+id/tvEmptyList"
+            style="@style/EmptyListView"
+            android:text="@string/no_movies_to_show"/>
+    </LinearLayout>
 </android.support.v4.widget.SwipeRefreshLayout>

@@ -26,6 +26,14 @@
         <item name="android:layout_centerInParent">true</item>
     </style>
 
+    <style name="EmptyListView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center</item>
+        <item name="android:visibility">gone</item>
+        <item name="android:textSize">@dimen/ts_list_title</item>
+    </style>
+
     <style name="MovieList">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
