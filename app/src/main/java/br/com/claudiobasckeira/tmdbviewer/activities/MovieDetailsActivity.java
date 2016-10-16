@@ -36,7 +36,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
     @ViewById
     ImageView ivPoster;
     @ViewById
-    TextView tvMovieName, tvMovieGenre, tvMovieReleaseDate, tvMovieOverview;
+    TextView tvMovieTitle, tvMovieGenres, tvMovieReleaseDate, tvMovieOverview;
 
     @AfterViews
     void init() {
@@ -46,13 +46,13 @@ public class MovieDetailsActivity extends AppCompatActivity {
                 .error(R.drawable.poster_not_available)
                 .into(ivPoster);
 
-        tvMovieName.setText(movie.getTitle());
+        tvMovieTitle.setText(movie.getTitle());
 
         List<String> genreNames = new ArrayList<>();
         for(Integer genreId : movie.getGenreIds()) {
             genreNames.add(genreManager.getGenreName(genreId));
         }
-        tvMovieGenre.setText(TextUtils.join(", ",genreNames));
+        tvMovieGenres.setText(TextUtils.join(", ",genreNames));
 
         tvMovieReleaseDate.setText(TmdbViewerDateHelper.format(movie.getReleaseDate()));
 

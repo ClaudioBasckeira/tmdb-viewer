@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -36,7 +35,7 @@ public class MovieListItem extends CardView implements View.OnClickListener {
     @ViewById
     ImageView ivPoster;
     @ViewById
-    TextView tvMovieName, tvMovieGenre, tvMovieReleaseDate;
+    TextView tvMovieTitle, tvMovieGenres, tvMovieReleaseDate;
 
     private Movie movie;
 
@@ -63,13 +62,13 @@ public class MovieListItem extends CardView implements View.OnClickListener {
                 .placeholder(R.drawable.movie_poster_placeholder)
                 .error(R.drawable.poster_not_available)
                 .into(ivPoster);
-        tvMovieName.setText(movie.getTitle());
+        tvMovieTitle.setText(movie.getTitle());
 
         List<String> genreNames = new ArrayList<>();
         for(Integer genreId : movie.getGenreIds()) {
             genreNames.add(genreManager.getGenreName(genreId));
         }
-        tvMovieGenre.setText(TextUtils.join(", ",genreNames));
+        tvMovieGenres.setText(TextUtils.join(", ",genreNames));
 
         tvMovieReleaseDate.setText(TmdbViewerDateHelper.format(movie.getReleaseDate()));
     }

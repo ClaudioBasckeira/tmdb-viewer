@@ -50,6 +50,8 @@ public abstract class MovieListActivity extends EventAwareActivity implements Sw
 
     @AfterViews
     protected void initMovieList() {
+        //TODO: test and deal with empty lists
+        //TODO: handle rotation better
         srlMovies.setOnRefreshListener(this);
         SwipeRefreshWorkaround.setRefreshing(srlMovies, true);
 
