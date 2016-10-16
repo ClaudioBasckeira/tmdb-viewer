@@ -21,7 +21,12 @@ public class MovieListMapper {
         return toMovieList(movieApiResponseList);
     }
 
-    private static List<Movie> toMovieList(List<MovieApiResponse> apiResponseList) {
+    public static List<Movie> toDateOrderedMovieList(List<MovieApiResponse> movieApiResponseList) {
+        Collections.sort(movieApiResponseList, new MovieApiResponseDateComparator());
+        return toMovieList(movieApiResponseList);
+    }
+
+    public static List<Movie> toMovieList(List<MovieApiResponse> apiResponseList) {
         List<Movie> mappedList = new ArrayList<>();
 
         for(MovieApiResponse element : apiResponseList) {

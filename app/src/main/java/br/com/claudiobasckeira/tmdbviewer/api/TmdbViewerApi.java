@@ -19,12 +19,14 @@ import org.joda.time.Days;
 import org.joda.time.LocalDate;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Callable;
 
 import br.com.claudiobasckeira.tmdbviewer.TmdbViewerApplication;
 import br.com.claudiobasckeira.tmdbviewer.api.entities.ConfigurationApiResponse;
+import br.com.claudiobasckeira.tmdbviewer.api.entities.MovieApiResponse;
 import br.com.claudiobasckeira.tmdbviewer.api.entities.MovieGenresApiResponse;
 import br.com.claudiobasckeira.tmdbviewer.api.entities.MoviesApiResponse;
 import br.com.claudiobasckeira.tmdbviewer.api.mappers.MovieGenreRecordListMapper;
@@ -98,16 +100,31 @@ public class TmdbViewerApi {
     }
 
     public void onEventBackgroundThread(GetUpcomingMoviesEvent.Request request) {
+        int maxPages = 3;
+        int maxMovies = 50;
+        boolean failure = false;
+
         GetUpcomingMoviesEvent.Response response;
 
         try {
-            Response<MoviesApiResponse> apiResponse = services.getUpcomingMovies(1).execute();
+            List<MovieApiResponse> movieApiResponseList = new ArrayList<>();
 
-            if(apiResponse.isSuccessful()) {
-                List<Movie> movieList = MovieListMapper.toDateOrderedMovieList(apiResponse.body());
+            for(int i = 1; i <= maxPages; i++) {
+                Response<MoviesApiResponse> apiResponse = services.getUpcomingMovies(i).execute();
+                if(apiResponse.isSuccessful()) {
+                    movieApiResponseList.addAll(apiResponse.body().getResults());
+                } else {
+                    failure = true;
+                    break;
+                }
+            }
+
+            if(!failure) {
+                List<Movie> movieList = MovieListMapper.toDateOrderedMovieList(movieApiResponseList);
+                movieList.subList(maxMovies, movieList.size()).clear();
                 response = new GetUpcomingMoviesEvent.Response(movieList);
             } else {
-                Throwable throwable = new Throwable(apiResponse.message());
+                Throwable throwable = new Throwable();
                 response = new GetUpcomingMoviesEvent.Response(throwable);
             }
             EventBus.getDefault().post(response);
