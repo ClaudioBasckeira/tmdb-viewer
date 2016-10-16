@@ -5,14 +5,13 @@ import br.com.claudiobasckeira.tmdbviewer.values.Movie;
 
 public class MovieMapper {
     public static Movie toMovie(MovieApiResponse apiResponse) {
-        String releaseDate = apiResponse.getReleaseDate() == null ? "" : apiResponse.getReleaseDate().toString();
 
         Movie mapped = new Movie(
                 apiResponse.getTitle(),
                 apiResponse.getPosterPath(),
                 apiResponse.getGenreIds(),
                 apiResponse.getOverview(),
-                releaseDate
+                apiResponse.getReleaseDate()
         );
 
         return mapped;
