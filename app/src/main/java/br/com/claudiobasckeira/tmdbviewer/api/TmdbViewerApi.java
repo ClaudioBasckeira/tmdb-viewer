@@ -6,7 +6,6 @@ import com.fatboyindustrial.gsonjodatime.Converters;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.j256.ormlite.dao.RuntimeExceptionDao;
 
 import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.App;
@@ -14,15 +13,12 @@ import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.RootContext;
 import org.androidannotations.annotations.sharedpreferences.Pref;
-import org.androidannotations.ormlite.annotations.OrmLiteDao;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import br.com.claudiobasckeira.tmdbviewer.TmdbViewerApplication;
 import br.com.claudiobasckeira.tmdbviewer.api.entities.ConfigurationApiResponse;
@@ -32,12 +28,10 @@ import br.com.claudiobasckeira.tmdbviewer.api.entities.MoviesApiResponse;
 import br.com.claudiobasckeira.tmdbviewer.api.mappers.MovieGenreRecordListMapper;
 import br.com.claudiobasckeira.tmdbviewer.api.mappers.MovieListMapper;
 import br.com.claudiobasckeira.tmdbviewer.database.entities.MovieGenreRecord;
-import br.com.claudiobasckeira.tmdbviewer.database.helper.TmdbViewerDatabaseHelper;
 import br.com.claudiobasckeira.tmdbviewer.events.GetConfigurationAndGenresEvent;
 import br.com.claudiobasckeira.tmdbviewer.events.GetUpcomingMoviesEvent;
 import br.com.claudiobasckeira.tmdbviewer.events.SearchMoviesEvent;
 import br.com.claudiobasckeira.tmdbviewer.genre.GenreManager;
-import br.com.claudiobasckeira.tmdbviewer.preferences.TmdbViewerPreferences;
 import br.com.claudiobasckeira.tmdbviewer.preferences.TmdbViewerPreferences_;
 import br.com.claudiobasckeira.tmdbviewer.values.Movie;
 import de.greenrobot.event.EventBus;
@@ -91,7 +85,7 @@ public class TmdbViewerApi {
         Gson gson = Converters.registerLocalDate(gsonBuilder).create();
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(PROTOCOL+"://"+ENDPOINT+"/"+API_VERSION+"/")
+                .baseUrl(PROTOCOL + "://" + ENDPOINT + "/" + API_VERSION + "/")
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .client(client)
                 .build();
@@ -109,9 +103,9 @@ public class TmdbViewerApi {
         try {
             List<MovieApiResponse> movieApiResponseList = new ArrayList<>();
 
-            for(int i = 1; i <= maxPages; i++) {
+            for (int i = 1; i <= maxPages; i++) {
                 Response<MoviesApiResponse> apiResponse = services.getUpcomingMovies(i).execute();
-                if(apiResponse.isSuccessful()) {
+                if (apiResponse.isSuccessful()) {
                     movieApiResponseList.addAll(apiResponse.body().getResults());
                 } else {
                     failure = true;
@@ -119,7 +113,7 @@ public class TmdbViewerApi {
                 }
             }
 
-            if(!failure) {
+            if (!failure) {
                 List<Movie> movieList = MovieListMapper.toDateOrderedMovieList(movieApiResponseList);
                 movieList.subList(maxMovies, movieList.size()).clear();
                 response = new GetUpcomingMoviesEvent.Response(movieList);
@@ -142,7 +136,7 @@ public class TmdbViewerApi {
         try {
             Response<MoviesApiResponse> apiResponse = services.searchMovies(request.getQuery()).execute();
 
-            if(apiResponse.isSuccessful()) {
+            if (apiResponse.isSuccessful()) {
                 List<Movie> movieList = MovieListMapper.toMovieList(apiResponse.body());
                 response = new SearchMoviesEvent.Response(movieList);
             } else {
@@ -161,7 +155,11 @@ public class TmdbViewerApi {
     public void onEventBackgroundThread(GetConfigurationAndGenresEvent.Request request) {
         GetConfigurationAndGenresEvent.Response response;
 
-        if(prefs.lastUpdate().exists() && Days.daysBetween(new LocalDate(prefs.lastUpdate().get()), new LocalDate()).getDays() < CONFIGURATION_UPDATE_INTERVAL) {
+        int daysSinceLastUpdate = 999;
+        if (prefs.lastUpdate().exists()) {
+            daysSinceLastUpdate = Days.daysBetween(new LocalDate(prefs.lastUpdate().get()), new LocalDate()).getDays();
+        }
+        if (daysSinceLastUpdate < CONFIGURATION_UPDATE_INTERVAL) {
             response = new GetConfigurationAndGenresEvent.Response();
             EventBus.getDefault().post(response);
         } else {
@@ -180,33 +178,33 @@ public class TmdbViewerApi {
         }
     }
 
-    protected void getConfiguration() throws IOException{
+    protected void getConfiguration() throws IOException {
         try {
             Response<ConfigurationApiResponse> apiResponse = services.getConfiguration().execute();
-            if(apiResponse.isSuccessful()) {
+            if (apiResponse.isSuccessful()) {
                 prefs.imagesBaseUrl().put(apiResponse.body().getImages().getBaseUrl());
             } else {
-                if(!prefs.imagesBaseUrl().exists()) throw new IOException(apiResponse.message());
+                if (!prefs.imagesBaseUrl().exists()) throw new IOException(apiResponse.message());
             }
         } catch (IOException e) {
             //We can cut some slack if there is already an older version of the info locally
-            if(!prefs.imagesBaseUrl().exists()) throw e;
+            if (!prefs.imagesBaseUrl().exists()) throw e;
         }
     }
 
-    protected void getMovieGenres() throws IOException{
+    protected void getMovieGenres() throws IOException {
         try {
             Response<MovieGenresApiResponse> apiResponse = services.getMovieGenres().execute();
 
-            if(apiResponse.isSuccessful()) {
+            if (apiResponse.isSuccessful()) {
                 final List<MovieGenreRecord> movieGenreRecordList = MovieGenreRecordListMapper.toMovieGenreRecordList(apiResponse.body());
                 genreManager.setGenres(movieGenreRecordList);
             } else {
-                if(genreManager.isDbEmpty()) throw new IOException(apiResponse.message());
+                if (genreManager.isDbEmpty()) throw new IOException(apiResponse.message());
             }
         } catch (IOException e) {
             //We can cut some slack if there is already an older version of the info locally
-            if(genreManager.isDbEmpty()) throw e;
+            if (genreManager.isDbEmpty()) throw e;
         }
     }
 }

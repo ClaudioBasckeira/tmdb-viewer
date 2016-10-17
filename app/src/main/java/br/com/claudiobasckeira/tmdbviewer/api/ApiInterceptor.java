@@ -2,8 +2,6 @@ package br.com.claudiobasckeira.tmdbviewer.api;
 
 import android.util.Log;
 
-import org.androidannotations.annotations.EBean;
-
 import java.io.IOException;
 
 import okhttp3.HttpUrl;
@@ -12,9 +10,9 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class ApiInterceptor implements Interceptor {
+    private static final String API_KEY_PARAM = "api_key";
     private String apiKey;
     private String apiHost;
-    private static final String API_KEY_PARAM = "api_key";
 
     public ApiInterceptor(String apiKey, String apiHost) {
         this.apiKey = apiKey;
@@ -25,7 +23,7 @@ public class ApiInterceptor implements Interceptor {
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
         Log.d("HOST", request.url().host());
-        if(!apiHost.equals(request.url().host())) {
+        if (!apiHost.equals(request.url().host())) {
             return chain.proceed(request);
         }
 

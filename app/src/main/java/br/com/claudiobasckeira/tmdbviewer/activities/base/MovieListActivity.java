@@ -14,18 +14,15 @@ import android.widget.Toast;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.InjectMenu;
 import org.androidannotations.annotations.InstanceState;
 import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.OptionsMenu;
 import org.androidannotations.annotations.ViewById;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import br.com.claudiobasckeira.tmdbviewer.R;
 import br.com.claudiobasckeira.tmdbviewer.adapters.MovieListAdapter;
-import br.com.claudiobasckeira.tmdbviewer.events.GetUpcomingMoviesEvent;
 import br.com.claudiobasckeira.tmdbviewer.events.base.GetMoviesEvent;
 import br.com.claudiobasckeira.tmdbviewer.helpers.SwipeRefreshWorkaround;
 import br.com.claudiobasckeira.tmdbviewer.values.Movie;
@@ -33,7 +30,7 @@ import de.greenrobot.event.EventBus;
 
 @EActivity(R.layout.activity_movie_list)
 @OptionsMenu(R.menu.options_menu)
-public abstract class MovieListActivity extends EventAwareActivity implements SwipeRefreshLayout.OnRefreshListener{
+public abstract class MovieListActivity extends EventAwareActivity implements SwipeRefreshLayout.OnRefreshListener {
     @Bean
     protected MovieListAdapter movieListAdapter;
 
@@ -71,10 +68,9 @@ public abstract class MovieListActivity extends EventAwareActivity implements Sw
         linearLayoutManager = new LinearLayoutManager(this);
         rvMovies.setLayoutManager(linearLayoutManager);
 
-        if(movieList == null) {
+        if (movieList == null) {
             fetchNewData();
-        }
-        else {
+        } else {
             updateAdapterData();
         }
     }

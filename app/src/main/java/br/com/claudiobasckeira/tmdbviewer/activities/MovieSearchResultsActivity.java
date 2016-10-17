@@ -8,11 +8,8 @@ import org.androidannotations.annotations.Extra;
 
 import br.com.claudiobasckeira.tmdbviewer.R;
 import br.com.claudiobasckeira.tmdbviewer.activities.base.MovieListActivity;
-import br.com.claudiobasckeira.tmdbviewer.events.GetUpcomingMoviesEvent;
 import br.com.claudiobasckeira.tmdbviewer.events.SearchMoviesEvent;
 import br.com.claudiobasckeira.tmdbviewer.events.base.GetMoviesEvent;
-
-import static android.app.SearchManager.QUERY;
 
 @EActivity(R.layout.activity_movie_list)
 public class MovieSearchResultsActivity extends MovieListActivity {

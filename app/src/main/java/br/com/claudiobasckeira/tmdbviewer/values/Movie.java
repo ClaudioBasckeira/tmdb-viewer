@@ -6,7 +6,7 @@ import org.parceler.Parcel;
 import java.util.List;
 
 @Parcel
-public class Movie{
+public class Movie {
     String title;
     String posterPath;
     List<Integer> genreIds;

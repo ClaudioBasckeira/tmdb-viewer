@@ -18,7 +18,7 @@ import br.com.claudiobasckeira.tmdbviewer.values.MovieGenre;
 
 @EBean(scope = EBean.Scope.Singleton)
 public class GenreManager {
-    Map<Integer,MovieGenre> genreMap;
+    Map<Integer, MovieGenre> genreMap;
 
     @OrmLiteDao(helper = TmdbViewerDatabaseHelper.class)
     RuntimeExceptionDao<MovieGenreRecord, String> movieGenreRecordDao;
@@ -58,7 +58,7 @@ public class GenreManager {
     }
 
     public String getGenreName(int genreId) {
-        if(!genreMap.containsKey(genreId)) return "";
+        if (!genreMap.containsKey(genreId)) return "";
         return genreMap.get(genreId).getName();
     }
 

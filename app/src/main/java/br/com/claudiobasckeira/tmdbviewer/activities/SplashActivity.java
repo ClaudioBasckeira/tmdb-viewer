@@ -18,7 +18,7 @@ public class SplashActivity extends EventAwareActivity {
     }
 
     public void onEventMainThread(GetConfigurationAndGenresEvent.Response response) {
-        if(response.isError()) {
+        if (response.isError()) {
             Toast.makeText(
                     this,
                     R.string.network_error,

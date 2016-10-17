@@ -2,9 +2,7 @@ package br.com.claudiobasckeira.tmdbviewer.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 
 import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.EBean;
@@ -18,19 +16,11 @@ import br.com.claudiobasckeira.tmdbviewer.viewgroups.MovieListItem;
 import br.com.claudiobasckeira.tmdbviewer.viewgroups.MovieListItem_;
 
 @EBean
-public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.ViewHolder>{
+public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.ViewHolder> {
     @RootContext
     Context context;
 
     private List<Movie> movieList;
-
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        public MovieListItem movieListItem;
-        public ViewHolder(MovieListItem v) {
-            super(v);
-            movieListItem = v;
-        }
-    }
 
     @AfterInject
     void init() {
@@ -65,5 +55,14 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
     @Override
     public int getItemCount() {
         return movieList.size();
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        public MovieListItem movieListItem;
+
+        public ViewHolder(MovieListItem v) {
+            super(v);
+            movieListItem = v;
+        }
     }
 }

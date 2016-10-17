@@ -42,7 +42,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
     void init() {
         setTitle(getString(R.string.details_about, movie.getTitle()));
         Glide.with(this)
-                .load(imageDownload.getImageUrl(ImageDownload.SIZE_ORIGINAL,movie.getPosterPath()))
+                .load(imageDownload.getImageUrl(ImageDownload.SIZE_ORIGINAL, movie.getPosterPath()))
                 .placeholder(R.drawable.movie_poster_placeholder)
                 .error(R.drawable.poster_not_available)
                 .into(ivPoster);
@@ -50,10 +50,10 @@ public class MovieDetailsActivity extends AppCompatActivity {
         tvMovieTitle.setText(movie.getTitle());
 
         List<String> genreNames = new ArrayList<>();
-        for(Integer genreId : movie.getGenreIds()) {
+        for (Integer genreId : movie.getGenreIds()) {
             genreNames.add(genreManager.getGenreName(genreId));
         }
-        tvMovieGenres.setText(TextUtils.join(", ",genreNames));
+        tvMovieGenres.setText(TextUtils.join(", ", genreNames));
 
         tvMovieReleaseDate.setText(TmdbViewerDateHelper.format(movie.getReleaseDate(), getString(R.string.release_date_unavailable)));
 

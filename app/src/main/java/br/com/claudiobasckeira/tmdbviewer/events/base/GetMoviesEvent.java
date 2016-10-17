@@ -6,7 +6,8 @@ import br.com.claudiobasckeira.tmdbviewer.values.Movie;
 
 public abstract class GetMoviesEvent {
     public abstract static class Request {
-        public Request() {}
+        public Request() {
+        }
     }
 
     public abstract static class Response {

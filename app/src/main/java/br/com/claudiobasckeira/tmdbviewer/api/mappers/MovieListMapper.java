@@ -29,7 +29,7 @@ public class MovieListMapper {
     public static List<Movie> toMovieList(List<MovieApiResponse> apiResponseList) {
         List<Movie> mappedList = new ArrayList<>();
 
-        for(MovieApiResponse element : apiResponseList) {
+        for (MovieApiResponse element : apiResponseList) {
             mappedList.add(MovieMapper.toMovie(element));
         }
 

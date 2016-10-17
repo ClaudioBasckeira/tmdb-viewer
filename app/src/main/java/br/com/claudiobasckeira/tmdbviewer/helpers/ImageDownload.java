@@ -13,11 +13,9 @@ import br.com.claudiobasckeira.tmdbviewer.preferences.TmdbViewerPreferences_;
 public class ImageDownload {
     public static final String SIZE_ORIGINAL = "original";
     public static final String SIZE_LIST = "w342";
-
-    private List<String> allowedSizes;
-
     @Pref
     TmdbViewerPreferences_ prefs;
+    private List<String> allowedSizes;
 
     @AfterInject
     public void init() {
@@ -27,10 +25,8 @@ public class ImageDownload {
     }
 
     public String getImageUrl(String size, String filename) {
-        if(!allowedSizes.contains(size)) size = SIZE_LIST;
+        if (!allowedSizes.contains(size)) size = SIZE_LIST;
 
-        String imageUrl = prefs.imagesBaseUrl().get()+"/"+size+"/"+filename;
-
-        return imageUrl;
+        return prefs.imagesBaseUrl().get() + "/" + size + "/" + filename;
     }
 }

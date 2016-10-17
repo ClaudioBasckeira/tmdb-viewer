@@ -12,7 +12,7 @@ public class MovieGenreRecordListMapper {
         List<MovieGenreRecord> mappedList = new ArrayList<>();
         List<MovieGenreApiResponse> apiResponseList = apiResponse.getGenres();
 
-        for(MovieGenreApiResponse element : apiResponseList) {
+        for (MovieGenreApiResponse element : apiResponseList) {
             mappedList.add(MovieGenreRecordMapper.toMovieGenreRecord(element));
         }
 

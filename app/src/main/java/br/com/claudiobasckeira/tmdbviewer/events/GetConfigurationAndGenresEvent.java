@@ -2,7 +2,8 @@ package br.com.claudiobasckeira.tmdbviewer.events;
 
 public class GetConfigurationAndGenresEvent {
     public static class Request {
-        public Request() {}
+        public Request() {
+        }
     }
 
     public static class Response {
