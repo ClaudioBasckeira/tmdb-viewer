@@ -11,6 +11,4 @@ import br.com.claudiobasckeira.tmdbviewer.api.TmdbViewerApi;
 public class TmdbViewerApplication extends Application {
     @Bean
     TmdbViewerApi tmdbViewerApi;
-
-
 }

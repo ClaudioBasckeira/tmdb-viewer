@@ -22,7 +22,6 @@ public class ApiInterceptor implements Interceptor {
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
-        Log.d("HOST", request.url().host());
         if (!apiHost.equals(request.url().host())) {
             return chain.proceed(request);
         }
