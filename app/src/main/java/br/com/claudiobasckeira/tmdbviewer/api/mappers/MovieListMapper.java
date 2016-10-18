@@ -10,23 +10,28 @@ import br.com.claudiobasckeira.tmdbviewer.api.mappers.comparators.MovieApiRespon
 import br.com.claudiobasckeira.tmdbviewer.values.Movie;
 
 public class MovieListMapper {
-    public static List<Movie> toMovieList(MoviesApiResponse apiResponse) {
-        List<MovieApiResponse> movieApiResponseList = apiResponse.getResults();
-        return toMovieList(movieApiResponseList);
-    }
 
-    public static List<Movie> toDateOrderedMovieList(MoviesApiResponse apiResponse) {
+    public static List<Movie> toDateOrderedMovieList(MoviesApiResponse apiResponse) throws IllegalArgumentException {
+        if (apiResponse == null) throw new IllegalArgumentException();
         List<MovieApiResponse> movieApiResponseList = apiResponse.getResults();
         Collections.sort(movieApiResponseList, new MovieApiResponseDateComparator());
         return toMovieList(movieApiResponseList);
     }
 
-    public static List<Movie> toDateOrderedMovieList(List<MovieApiResponse> movieApiResponseList) {
+    public static List<Movie> toDateOrderedMovieList(List<MovieApiResponse> movieApiResponseList) throws IllegalArgumentException {
+        if (movieApiResponseList == null) throw new IllegalArgumentException();
         Collections.sort(movieApiResponseList, new MovieApiResponseDateComparator());
         return toMovieList(movieApiResponseList);
     }
 
-    public static List<Movie> toMovieList(List<MovieApiResponse> apiResponseList) {
+    public static List<Movie> toMovieList(MoviesApiResponse apiResponse) throws IllegalArgumentException {
+        if (apiResponse == null) throw new IllegalArgumentException();
+        List<MovieApiResponse> movieApiResponseList = apiResponse.getResults();
+        return toMovieList(movieApiResponseList);
+    }
+
+    public static List<Movie> toMovieList(List<MovieApiResponse> apiResponseList) throws IllegalArgumentException {
+        if (apiResponseList == null) throw new IllegalArgumentException();
         List<Movie> mappedList = new ArrayList<>();
 
         for (MovieApiResponse element : apiResponseList) {

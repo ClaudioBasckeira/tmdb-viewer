@@ -1,7 +1,5 @@
 package br.com.claudiobasckeira.tmdbviewer.api;
 
-import android.util.Log;
-
 import java.io.IOException;
 
 import okhttp3.HttpUrl;

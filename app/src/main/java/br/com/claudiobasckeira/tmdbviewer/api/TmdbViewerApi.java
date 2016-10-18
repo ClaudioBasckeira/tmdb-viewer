@@ -123,7 +123,7 @@ public class TmdbViewerApi {
             }
             EventBus.getDefault().post(response);
 
-        } catch (IOException e) {
+        } catch (IOException | IllegalArgumentException e) {
             e.printStackTrace();
             response = new GetUpcomingMoviesEvent.Response(e);
             EventBus.getDefault().post(response);
@@ -145,7 +145,7 @@ public class TmdbViewerApi {
             }
             EventBus.getDefault().post(response);
 
-        } catch (IOException e) {
+        } catch (IOException | IllegalArgumentException e) {
             e.printStackTrace();
             response = new SearchMoviesEvent.Response(e);
             EventBus.getDefault().post(response);
@@ -170,7 +170,7 @@ public class TmdbViewerApi {
 
                 response = new GetConfigurationAndGenresEvent.Response();
                 EventBus.getDefault().post(response);
-            } catch (IOException e) {
+            } catch (IOException | IllegalArgumentException e) {
                 e.printStackTrace();
                 response = new GetConfigurationAndGenresEvent.Response(e);
                 EventBus.getDefault().post(response);
@@ -192,7 +192,7 @@ public class TmdbViewerApi {
         }
     }
 
-    protected void getMovieGenres() throws IOException {
+    protected void getMovieGenres() throws IOException, IllegalArgumentException {
         try {
             Response<MovieGenresApiResponse> apiResponse = services.getMovieGenres().execute();
 
@@ -202,7 +202,7 @@ public class TmdbViewerApi {
             } else {
                 if (genreManager.isDbEmpty()) throw new IOException(apiResponse.message());
             }
-        } catch (IOException e) {
+        } catch (IOException | IllegalArgumentException e) {
             //We can cut some slack if there is already an older version of the info locally
             if (genreManager.isDbEmpty()) throw e;
         }
