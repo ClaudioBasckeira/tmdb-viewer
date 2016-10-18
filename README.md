@@ -1,6 +1,6 @@
 ## TMDB Viewer
 
-A small Android app that allows viewing the list of upcoming movies from TMDb, as well search for movies and see the details of a specific movie.
+A small Android app that allows viewing the list of upcoming movies from TMDb, as well as searching for movies and see the details of a specific movie.
 
 ## Third-party libraries used
 
