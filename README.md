@@ -13,7 +13,7 @@ The HTTP client used to implement the calls to TMDb's API. Streamlines the imple
 ### [OkHttp](http://square.github.io/okhttp/)
 HTTP client used by retrofit to actually make the calls. Allows setting interceptors and logging.
 
-### [Greenrobot EventBus] http://greenrobot.org/eventbus/
+### [Greenrobot EventBus](http://greenrobot.org/eventbus/)
 Used for asynchronous communication between the activities and the service layer, allowing them to be very decoupled. Very clean and concise usage
 
 ### [Gson](https://github.com/google/gson)
