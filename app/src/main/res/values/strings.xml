@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">TMDb Viewer</string>
+    <string name="network_error">Error communicating with TMDb</string>
+    <string name="movie_list_error">Error loading movie list. Please check your network connection and try again</string>
+    <string name="refresh">Refresh</string>
+    <string name="search_title">Search</string>
+    <string name="upcoming_movies">Upcoming movies</string>
+    <string name="search_hint">Movie name</string>
+    <string name="search_results">Search results</string>
+    <string name="search_results_for">"Search results for: %1$s"</string>
+    <string name="details_about">"Details about %1$s"</string>
+    <string name="no_movies_to_show">No movies to show</string>
+    <string name="release_date_unavailable">Release date unavailable</string>
+</resources>
